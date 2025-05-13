@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application de Discussion</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="chat-container">
+    <!-- Sidebar avec la liste des conversations -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>Messages</h1>
+            <button class="icon-button" aria-label="Plus d'options">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <label>
+                <input type="text" placeholder="Rechercher une conversation..." class="search-input">
+            </label>
+        </div>
+        <div class="conversations-list" id="conversationsList">
+            <!-- Les conversations seront générées dynamiquement par JavaScript -->
+        </div>
+        <div class="current-user">
+            <div class="avatar">
+                <img src="https://via.placeholder.com/40" alt="Votre avatar">
+                <span class="status-indicator online"></span>
+            </div>
+            <div class="user-info">
+                <p class="user-name">Thomas</p>
+                <p class="user-status">En ligne</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zone principale de chat -->
+    <div class="chat-main">
+        <div class="chat-header" id="chatHeader">
+            <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="chat-header-user">
+                <div class="avatar">
+                    <img src="https://via.placeholder.com/40" alt="Avatar du contact" id="contactAvatar">
+                    <span class="status-indicator online" id="contactStatus"></span>
+                </div>
+                <div class="user-info">
+                    <p class="user-name" id="contactName">Sélectionnez une conversation</p>
+                    <p class="user-status" id="contactStatusText">-</p>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="icon-button" aria-label="Appel">
+                    <i class="fas fa-phone"></i>
+                </button>
+                <button class="icon-button" aria-label="Vidéo">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="icon-button" aria-label="Plus d'options">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="messages-container" id="messagesContainer">
+            <div class="empty-state" id="emptyState">
+                <h2>Aucune conversation sélectionnée</h2>
+                <p>Sélectionnez une conversation pour commencer à discuter</p>
+            </div>
+            <div class="messages" id="messages">
+                <!-- Les messages seront générés dynamiquement par JavaScript -->
+            </div>
+        </div>
+
+        <div class="message-input-container" id="messageInputContainer">
+            <button class="icon-button" aria-label="Pièce jointe">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <div class="message-input-wrapper">
+                <label for="messageInput"></label><input type="text" placeholder="Écrivez un message..." id="messageInput" class="message-input">
+                <button class="icon-button emoji-button" aria-label="Emoji">
+                    <i class="fas fa-smile"></i>
+                </button>
+            </div>
+            <button class="send-button" id="sendButton" aria-label="Envoyer">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="../static/js/app.js"></script>
+</body>
+</html>
