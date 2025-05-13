@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Données fictives
-    const currentUser = {
+    const currentUser  = {
         id: "current-user",
         name: "Thomas",
         avatar: "https://via.placeholder.com/40",
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? `
                         <div class="conversation-preview">
                             <span class="conversation-last-message">
-                                ${conversation.lastMessage.senderId === currentUser.id ? "Vous: " : ""}
+                                ${conversation.lastMessage.senderId === currentUser .id ? "Vous: " : ""}
                                 ${conversation.lastMessage.text}
                             </span>
                             ${conversation.unreadCount > 0 ? `<span class="unread-count">${conversation.unreadCount}</span>` : ""}
@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         conversationMsgs.forEach((message) => {
             const messageElement = document.createElement("div")
-            messageElement.className = `message ${message.senderId === currentUser.id ? "outgoing" : "incoming"}`
+            messageElement.className = `message ${message.senderId === currentUser .id ? "outgoing" : "incoming"}`
 
             messageElement.innerHTML = `
                 <div class="message-bubble">
@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Créer un nouveau message
         const newMessage = {
             id: `msg-${Date.now()}`,
-            senderId: currentUser.id,
+            senderId: currentUser .id,
             text: text,
             timestamp: formatTime(new Date()),
             read: false,
@@ -348,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //     body: JSON.stringify({
         //         conversationId: activeConversation,
         //         text: text,
-        //         senderId: currentUser.id
+        //         senderId: currentUser .id
         //     }),
         // });
     }
@@ -382,6 +382,36 @@ document.addEventListener("DOMContentLoaded", () => {
             sidebar.classList.remove("open")
         }
     })
+
+    document.getElementById("startChatButton").addEventListener("click", () => {
+        const username = document.getElementById("usernameInput").value.trim();
+        if (username) {
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.id) {
+                        document.getElementById("usernameContainer").style.display = "none";
+                        document.querySelector(".chat-container").style.display = "flex";
+                        initializeWebSocket(username);
+                    } else {
+                        alert("Erreur lors de l'enregistrement du pseudo.");
+                    }
+                });
+        } else {
+            alert("Veuillez entrer un pseudo.");
+        }
+    });
+
+    function initializeWebSocket(username) {
+        const socket = new WebSocket(`ws://localhost:8080/ws/${username}`);
+        // Logique de gestion des messages ici...
+    }
 
     // Initialisation
     renderConversations()

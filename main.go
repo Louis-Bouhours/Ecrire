@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	_ "fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -86,13 +84,13 @@ func main() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid payload"})
 			return
 		}
-		_, err := usersCol.InsertOne(ctx, user)
+		newUser, err := registerUser(ctx, user.Username)
 		if err != nil {
 			log.Printf("Erreur lors de l'insertion de l'utilisateur: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not register user"})
 			return
 		}
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, newUser)
 	})
 
 	r.GET("/ws/:username", func(c *gin.Context) {
@@ -132,4 +130,13 @@ func main() {
 
 	log.Println("Serveur démarré sur http://localhost:8080")
 	r.Run(":8080")
+}
+
+func registerUser(ctx context.Context, username string) (*User, error) {
+	user := User{Username: username}
+	_, err := usersCol.InsertOne(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
