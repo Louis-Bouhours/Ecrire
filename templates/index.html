@@ -13,7 +13,7 @@
     <!-- Sidebar avec la liste des conversations -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h1>Messages</h1>
+            <h1>Écrire</h1>
             <button class="icon-button" aria-label="Plus d'options">
                 <i class="fas fa-ellipsis-v"></i>
             </button>
@@ -33,16 +33,12 @@
                 <span class="status-indicator online"></span>
             </div>
             <div class="user-info">
-                <p class="user-name">"username"</p>
+                <p class="user-name" id="username">$username</p>
                 <p class="user-status">En ligne</p>
             </div>
         </div>
     </div>
 
-    <div id="usernameContainer">
-        <label for="usernameInput"></label><input type="text" id="usernameInput" placeholder="Entrez votre pseudo" />
-        <button id="startChatButton">Commencer le chat</button>
-    </div>
     <div class="chat-container" style="display:none;">
         <!-- Contenu de la page de chat ici -->
     </div>
@@ -103,6 +99,15 @@
     </div>
 </div>
 
+<div id="profile" style="position:fixed;bottom:10px;left:20px;color:#666;font-weight:bold;font-size:1.1em;">
+    <span id="profile-username"></span>
+</div>
+<script>
+    // Affiche le pseudo sauvegardé
+    const username = localStorage.getItem('username');
+    document.getElementById('profile-username').textContent = username ? username : 'Utilisateur';
+    // tu peux utiliser la variable "username" côté JS pour le reste du chat
+</script>
 <script src="../static/js/app.js"></script>
 </body>
 </html>

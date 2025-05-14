@@ -9,9 +9,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -34,7 +36,10 @@ type Message struct {
 type User struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Username string             `bson:"username" json:"username"`
+	Password string             `bson:"password" json:"-"`
 }
+
+// ...variables (mongo, clients, etc)
 
 func main() {
 	// Set Gin to release mode
@@ -64,18 +69,18 @@ func main() {
 	r := gin.Default()
 	r.Static("/static", "./static")
 
-	// Nouvelle route pour la page de connexion
+	// Page de connexion/inscription
 	r.GET("/", func(c *gin.Context) {
 		content, err := os.ReadFile("templates/login_page.html")
 		if err != nil {
-			c.String(http.StatusInternalServerError, "Erreur de lecture du fichier login.html")
+			c.String(http.StatusInternalServerError, "Erreur de lecture du fichier login_page.html")
 			return
 		}
 		c.Header("Content-Type", "text/html")
 		c.String(http.StatusOK, string(content))
 	})
 
-	// Route pour la page de chat
+	// Page de chat
 	r.GET("/chat", func(c *gin.Context) {
 		content, err := os.ReadFile("templates/index.html")
 		if err != nil {
@@ -86,20 +91,64 @@ func main() {
 		c.String(http.StatusOK, string(content))
 	})
 
-	r.POST("/register", func(c *gin.Context) {
-		var user User
-		if err := c.BindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid payload"})
+	// ---- API d'inscription ----
+	r.POST("/api/register", func(c *gin.Context) {
+		var body struct {
+			Username string `json:"username"`
+			Password string `json:"password"`
+		}
+		if err := c.BindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Mauvais payload"})
 			return
 		}
-		newUser, err := registerUser(ctx, user.Username)
+		// Vérifier unicité du nom
+		count, err := usersCol.CountDocuments(context.TODO(), bson.M{"username": body.Username})
 		if err != nil {
-			log.Printf("Erreur lors de l'insertion de l'utilisateur: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not register user"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur DB"})
 			return
 		}
-		c.JSON(http.StatusOK, newUser)
+		if count > 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Nom déjà utilisé"})
+			return
+		}
+		hashed, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne"})
+			return
+		}
+		user := User{Username: body.Username, Password: string(hashed)}
+		_, err = usersCol.InsertOne(context.TODO(), user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur création"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"username": body.Username})
 	})
+
+	// ---- API de connexion ----
+	r.POST("/api/login", func(c *gin.Context) {
+		var body struct {
+			Username string `json:"username"`
+			Password string `json:"password"`
+		}
+		if err := c.BindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Mauvais payload"})
+			return
+		}
+		var user User
+		err := usersCol.FindOne(context.TODO(), bson.M{"username": body.Username}).Decode(&user)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur inconnu"})
+			return
+		}
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password)); err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Mauvais mot de passe"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"username": user.Username})
+	})
+
+	// Les autres routes (WebSocket, etc.) restent pareil
 
 	r.GET("/ws/:username", func(c *gin.Context) {
 		username := c.Param("username")
@@ -138,13 +187,4 @@ func main() {
 
 	log.Println("Serveur démarré sur http://localhost:8080")
 	r.Run(":8080")
-}
-
-func registerUser(ctx context.Context, username string) (*User, error) {
-	user := User{Username: username}
-	_, err := usersCol.InsertOne(ctx, user)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
 }
