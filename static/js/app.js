@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Données fictives
+    const username = localStorage.getItem('username');
     const currentUser  = {
         id: "current-user",
         name: "Thomas",

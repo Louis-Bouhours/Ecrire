@@ -62,19 +62,27 @@ func main() {
 	usersCol = db.Collection("users")
 
 	r := gin.Default()
-
 	r.Static("/static", "./static")
 
+	// Nouvelle route pour la page de connexion
 	r.GET("/", func(c *gin.Context) {
-		// Lire le contenu du fichier index.html
+		content, err := os.ReadFile("templates/login_page.html")
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Erreur de lecture du fichier login.html")
+			return
+		}
+		c.Header("Content-Type", "text/html")
+		c.String(http.StatusOK, string(content))
+	})
+
+	// Route pour la page de chat
+	r.GET("/chat", func(c *gin.Context) {
 		content, err := os.ReadFile("templates/index.html")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Erreur de lecture du fichier index.html")
 			return
 		}
-		// Définir le type de contenu à text/html
 		c.Header("Content-Type", "text/html")
-		// Renvois le contenu du fichier index.html
 		c.String(http.StatusOK, string(content))
 	})
 
