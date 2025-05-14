@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,13 +28,13 @@
             <!-- Les conversations seront générées dynamiquement par JavaScript -->
         </div>
         <div class="current-user">
+            <div class="user-info">
+                <p id="profile-username">Utilisateur</p>
+                <p class="user-status">En ligne</p>
+            </div>
             <div class="avatar">
                 <img src="https://via.placeholder.com/40" alt="Votre avatar">
                 <span class="status-indicator online"></span>
-            </div>
-            <div class="user-info">
-                <p class="user-name" id="username">$username</p>
-                <p class="user-status">En ligne</p>
             </div>
         </div>
     </div>
@@ -99,15 +99,6 @@
     </div>
 </div>
 
-<div id="profile" style="position:fixed;bottom:10px;left:20px;color:#666;font-weight:bold;font-size:1.1em;">
-    <span id="profile-username"></span>
-</div>
-<script>
-    // Affiche le pseudo sauvegardé
-    const username = localStorage.getItem('username');
-    document.getElementById('profile-username').textContent = username ? username : 'Utilisateur';
-    // tu peux utiliser la variable "username" côté JS pour le reste du chat
-</script>
 <script src="../static/js/app.js"></script>
 </body>
 </html>

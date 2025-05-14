@@ -413,4 +413,44 @@ body {
     .mobile-menu-button {
         display: block;
     }
+
+    .current-user {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    .current-user .user-info {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .current-user .user-info p {
+        margin: 0;
+    }
+
+    .current-user .avatar {
+        position: relative;
+    }
+
+    .current-user .avatar img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+    }
+
+    .status-indicator.online {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 10px;
+        height: 10px;
+        background-color: green;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+
 }

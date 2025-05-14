@@ -1,12 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Données fictives
+
     const username = localStorage.getItem('username');
-    const currentUser  = {
-        id: "current-user",
-        name: "Thomas",
-        avatar: "https://via.placeholder.com/40",
-        status: "online",
-    }
+    document.getElementById('profile-username').textContent = username ? username : 'Utilisateur';
+    const currentUserId = localStorage.getItem('userId');
+    document.getElementById('profile-username').textContent = currentUserId ? currentUserId : 'Utilisateur';
+    const currentAvatar = localStorage.getItem('avatar');
+    document.getElementById('profile-avatar').src = currentAvatar ? currentAvatar : 'https://via.placeholder.com/40';
+    const currentStatus = localStorage.getItem('status');
+    document.getElementById('profile-status').textContent = currentStatus ? currentStatus : 'En ligne';
+
 
     const conversations = [
         {
@@ -195,13 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const statusClass =
                 conversation.user.status === "online" ? "online" : conversation.user.status === "away" ? "away" : "offline"
 
-            const statusText =
-                conversation.user.status === "online"
-                    ? "En ligne"
-                    : conversation.user.status === "away"
-                        ? "Absent"
-                        : conversation.user.lastSeen || "Hors ligne"
 
+            let currentUser;
             conversationElement.innerHTML = `
                 <div class="avatar">
                     <img src="${conversation.user.avatar}" alt="${conversation.user.name}">
