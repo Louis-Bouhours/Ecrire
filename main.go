@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/Sarinja-Corp/Ecrire/api"
 	"github.com/Sarinja-Corp/Ecrire/models"
 	"log"
@@ -13,6 +14,8 @@ import (
 )
 
 func main() {
+	fmt.Println("api.client")
+	fmt.Println("api.db")
 	gin.SetMode(gin.ReleaseMode)
 
 	ctx := context.Background()
@@ -22,7 +25,7 @@ func main() {
 		log.Fatalf("Erreur MongoDB: %v", err)
 	}
 	defer func(client *mongo.Client, ctx context.Context) {
-		err := models.Client.Disconnect(ctx)
+		err := client.Disconnect(ctx)
 		if err != nil {
 			log.Fatalf("Erreur déconnexion MongoDB: %v", err)
 		}
@@ -61,6 +64,7 @@ func main() {
 	// Inclusion des routes API
 	api.RegisterUserRoutes(r)
 	api.LoginUserRoutes(r)
+	api.LogoutUserRoutes(r) // Ajout de la route de déconnexion
 
 	log.Println("Serveur sur http://localhost:8080")
 	err = r.Run(":8080")
