@@ -13,6 +13,13 @@ func AuthRequired() gin.HandlerFunc {
 			return
 		}
 
+		// Vérifie blacklist
+		exists, _ := Rdb.Get(Ctx, "bl:"+token).Result()
+		if exists == "true" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token invalide"})
+			return
+		}
+
 		claims, err := ValidateJWT(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token invalide"})

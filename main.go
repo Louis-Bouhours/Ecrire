@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-
+	auth.InitRedis()
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()

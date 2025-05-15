@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
+	"time"
 	_ "time"
 )
 
@@ -41,6 +42,16 @@ func LoginHandler(c *gin.Context) {
 }
 
 func LogoutHandler(c *gin.Context) {
+	tokenStr, err := c.Cookie("token")
+	if err == nil {
+		// on stocke le token comme clé dans Redis
+		claims, err := ValidateJWT(tokenStr)
+		if err == nil {
+			exp := time.Until(claims.ExpiresAt.Time)
+			Rdb.Set(Ctx, "bl:"+tokenStr, "true", exp)
+		}
+	}
+	// Supprimer cookie client
 	c.SetCookie("token", "", -1, "/", "", true, true)
 	c.JSON(http.StatusOK, gin.H{"message": "Déconnecté"})
 }
