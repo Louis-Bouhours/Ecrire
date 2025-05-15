@@ -2,6 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = localStorage.getItem('username');
     document.getElementById('profile-username').textContent = username ? username : 'Utilisateur';
 
+    fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ username: "admin", password: "1234" })
+    }).then(res => res.json()).then(console.log);
+
     const conversations = [
         // Exemple de conversations
         {
@@ -21,6 +27,44 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             unreadCount: 0,
         },
+
+        {
+            id: "conv2",
+            user: {
+                id: "user1",
+                name: "Sophie Martin",
+                avatar: "https://via.placeholder.com/40",
+                status: "online",
+            },
+            lastMessage: {
+                id: "msg1",
+                senderId: "user1",
+                text: "On se retrouve où pour le déjeuner demain ?",
+                timestamp: "10:42",
+                read: true,
+            },
+            unreadCount: 0,
+        },
+
+        {
+            id: "conv3",
+            user: {
+                id: "user1",
+                name: "Sophie Martin",
+                avatar: "https://via.placeholder.com/40",
+                status: "online",
+            },
+            lastMessage: {
+                id: "msg1",
+                senderId: "user1",
+                text: "On se retrouve où pour le déjeuner demain ?",
+                timestamp: "10:42",
+                read: true,
+            },
+            unreadCount: 4,
+        },
+
+
         // Ajoutez d'autres conversations ici
     ];
 
