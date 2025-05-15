@@ -1,42 +1,43 @@
 package main
 
 import (
-	"Ecrire/api"
 	"context"
+	"fmt"
+	"github.com/Sarinja-Corp/Ecrire/api"
 	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	client      *mongo.Client
-	db          *mongo.Database
-	messagesCol *mongo.Collection
-	usersCol    *mongo.Collection
-)
-
 func main() {
+	fmt.Println("api.client")
+	fmt.Println("api.db")
 	gin.SetMode(gin.ReleaseMode)
 
 	ctx := context.Background()
 	var err error
-	client, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://Sarinja:CfJwJR5C8yrESU3B@ecriredb.pt0ryz0.mongodb.net/"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://Sarinja:CfJwJR5C8yrESU3B@ecriredb.pt0ryz0.mongodb.net/"))
 	if err != nil {
 		log.Fatalf("Erreur MongoDB: %v", err)
 	}
-	defer client.Disconnect(ctx)
+	defer func(client *mongo.Client, ctx context.Context) {
+		err := client.Disconnect(ctx)
+		if err != nil {
+
+		}
+	}(client, ctx)
 	if err = client.Ping(ctx, nil); err != nil {
 		log.Fatalf("MongoDB indisponible!")
 	}
 	log.Println("MongoDB connecté.")
 
-	db = client.Database("EcrireDB")
-	messagesCol = db.Collection("messages")
-	usersCol = db.Collection("users")
-
+	//db := client.Database("EcrireDB")
+	//messagesCol := db.Collection("messages")
+	//usersCol := db.Collection("users")
 	r := gin.Default()
 	r.Static("/static", "./static")
 
@@ -65,5 +66,8 @@ func main() {
 	api.LoginUserRoutes(r)
 
 	log.Println("Serveur sur http://localhost:8080")
-	r.Run(":8080")
+	err = r.Run(":8080")
+	if err != nil {
+		log.Fatalf("Erreur serveur: %v", err)
+	}
 }

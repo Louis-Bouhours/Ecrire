@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	_ "fmt"
+	"github.com/Sarinja-Corp/Ecrire/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -22,7 +24,7 @@ func apiUserCheckExist(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Nom d'utilisateur requis"})
 		return
 	}
-	count, err := usersCol.CountDocuments(context.TODO(), bson.M{"username": username})
+	count, err := models.UsersCol.CountDocuments(context.TODO(), bson.M{"username": username})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur base de données"})
 		return
@@ -41,7 +43,7 @@ func apiUserRegister(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Payload invalide"})
 		return
 	}
-	count, err := usersCol.CountDocuments(context.TODO(), bson.M{"username": body.Username})
+	count, err := models.UsersCol.CountDocuments(context.TODO(), bson.M{"username": body.Username})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur base"})
 		return
@@ -55,8 +57,8 @@ func apiUserRegister(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur serveur"})
 		return
 	}
-	newUser := User{Username: body.Username, Password: string(hashed), Avatar: body.Avatar}
-	_, err = usersCol.InsertOne(context.TODO(), newUser)
+	newUser := models.User{Username: body.Username, Password: string(hashed), Avatar: body.Avatar}
+	_, err = models.UsersCol.InsertOne(context.TODO(), newUser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur création utilisateur"})
 		return

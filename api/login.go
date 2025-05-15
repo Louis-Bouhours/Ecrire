@@ -2,8 +2,10 @@ package api
 
 import (
 	"context"
+	"github.com/Sarinja-Corp/Ecrire/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
@@ -20,8 +22,8 @@ func apiUserLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Champs requis"})
 		return
 	}
-	var user User
-	err := usersCol.FindOne(context.TODO(), bson.M{"username": username}).Decode(&user)
+	var user models.User
+	err := models.UsersCol.FindOne(context.TODO(), bson.M{"username": username}).Decode(&user)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur inconnu"})
 		return
@@ -31,10 +33,15 @@ func apiUserLogin(c *gin.Context) {
 		return
 	}
 
-	var messages []Message
-	cursor, err := messagesCol.Find(context.TODO(), bson.M{"sender": username})
+	var messages []models.Message
+	cursor, err := models.MessagesCol.Find(context.TODO(), bson.M{"sender": username})
 	if err == nil {
-		defer cursor.Close(context.TODO())
+		defer func(cursor *mongo.Cursor, ctx context.Context) {
+			err := cursor.Close(ctx)
+			if err != nil {
+
+			}
+		}(cursor, context.TODO())
 		_ = cursor.All(context.TODO(), &messages)
 	}
 
