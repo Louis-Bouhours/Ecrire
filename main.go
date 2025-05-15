@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -27,7 +26,7 @@ func main() {
 	defer func(client *mongo.Client, ctx context.Context) {
 		err := client.Disconnect(ctx)
 		if err != nil {
-
+			log.Fatalf("Erreur déconnexion MongoDB: %v", err)
 		}
 	}(client, ctx)
 	if err = client.Ping(ctx, nil); err != nil {
@@ -35,9 +34,6 @@ func main() {
 	}
 	log.Println("MongoDB connecté.")
 
-	//db := client.Database("EcrireDB")
-	//messagesCol := db.Collection("messages")
-	//usersCol := db.Collection("users")
 	r := gin.Default()
 	r.Static("/static", "./static")
 
@@ -61,7 +57,7 @@ func main() {
 		c.String(200, string(content))
 	})
 
-	// Inclusion des routes API (=> très important sinon 404)
+	// Inclusion des routes API
 	api.RegisterUserRoutes(r)
 	api.LoginUserRoutes(r)
 

@@ -10,7 +10,6 @@
 </head>
 <body>
 <div class="chat-container">
-    <!-- Sidebar avec la liste des conversations -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h1>Écrire</h1>
@@ -24,9 +23,7 @@
                 <input type="text" placeholder="Rechercher une conversation..." class="search-input">
             </label>
         </div>
-        <div class="conversations-list" id="conversationsList">
-            <!-- Les conversations seront générées dynamiquement par JavaScript -->
-        </div>
+        <div class="conversations-list" id="conversationsList"></div>
         <div class="current-user">
             <div class="user-info">
                 <p id="profile-username">Utilisateur</p>
@@ -39,11 +36,6 @@
         </div>
     </div>
 
-    <div class="chat-container" style="display:none;">
-        <!-- Contenu de la page de chat ici -->
-    </div>
-
-    <!-- Zone principale de chat -->
     <div class="chat-main">
         <div class="chat-header" id="chatHeader">
             <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Menu">
@@ -77,9 +69,7 @@
                 <h2>Aucune conversation sélectionnée</h2>
                 <p>Sélectionnez une conversation pour commencer à discuter</p>
             </div>
-            <div class="messages" id="messages">
-                <!-- Les messages seront générés dynamiquement par JavaScript -->
-            </div>
+            <div class="messages" id="messages"></div>
         </div>
 
         <div class="message-input-container" id="messageInputContainer">
@@ -88,9 +78,6 @@
             </button>
             <div class="message-input-wrapper">
                 <label for="messageInput"></label><input type="text" placeholder="Écrivez un message..." id="messageInput" class="message-input">
-                <button class="icon-button emoji-button" aria-label="Emoji">
-                    <i class="fas fa-smile"></i>
-                </button>
             </div>
             <button class="send-button" id="sendButton" aria-label="Envoyer">
                 <i class="fas fa-paper-plane"></i>

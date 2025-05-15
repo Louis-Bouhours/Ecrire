@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Connexion / Inscription Chat</title>
     <style>
-        body {font-family:Arial; height:100vh;display:flex;justify-content:center;align-items:center;background:#f0f2f5;}
+        body {font-family:Arial,cursive; height:100vh;display:flex;justify-content:center;align-items:center;background:#f0f2f5;}
         .container {background:#fff;padding:30px 40px;border-radius:10px;box-shadow:0 2px 10px #0002;}
         .container h2 {margin-bottom: 15px;}
         input {display:block;margin:12px 0;padding:10px 8px;width:100%;border-radius:5px;border:1px solid #bbb;}
@@ -20,49 +20,49 @@
     <div id="form-error" class="error"></div>
     <label for="username"></label><input type="text" id="username" placeholder="Nom d'utilisateur" autocomplete="username">
     <label for="password"></label><input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password">
-    <button id="submit-btn" onclick="submit()">Se connecter</button>
+    <button id="submit-btn">Se connecter</button>
     <div class="switch" id="switch-form" onclick="switchForm()">Vous n'avez pas de compte ? Inscrivez-vous.</div>
 </div>
 <script>
-let isLogin = true;
-function switchForm() {
-    isLogin = !isLogin;
-    document.getElementById('form-title').textContent = isLogin ? 'Connexion' : 'Inscription';
-    document.getElementById('submit-btn').textContent = isLogin ? 'Se connecter' : "S'inscrire";
-    document.getElementById('switch-form').textContent = isLogin 
-        ? "Vous n'avez pas de compte ? Inscrivez-vous."
-        : "Déjà inscrit ? Connexion.";
-    document.getElementById('form-error').textContent = "";
-}
-
-function submit() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    if (!username || !password) {
-        document.getElementById('form-error').textContent = "Veuillez remplir tous les champs.";
-        return;
+    let isLogin = true;
+    function switchForm() {
+        isLogin = !isLogin;
+        document.getElementById('form-title').textContent = isLogin ? 'Connexion' : 'Inscription';
+        document.getElementById('submit-btn').textContent = isLogin ? 'Se connecter' : "S'inscrire";
+        document.getElementById('switch-form').textContent = isLogin
+            ? "Vous n'avez pas de compte ? Inscrivez-vous."
+            : "Déjà inscrit ? Connexion.";
+        document.getElementById('form-error').textContent = "";
     }
-    const url = isLogin ? '/api/login' : '/api/register';
-    fetch(url, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({username, password})
-    }).then(r=>r.json()).then(res=>{
-        if(res.error) {
-            document.getElementById('form-error').textContent = res.error;
-        } else {
-            // Sauvegarde le pseudo pour le chat
-            localStorage.setItem('username', username);
-            window.location.href = '/chat';
+
+    function submit() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        if (!username || !password) {
+            document.getElementById('form-error').textContent = "Veuillez remplir tous les champs.";
+            return;
         }
+        const url = isLogin ? '/api/login' : '/api/register';
+        fetch(url, {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({username, password})
+        }).then(r => r.json()).then(res => {
+            if(res.error) {
+                document.getElementById('form-error').textContent = res.error;
+            } else {
+                localStorage.setItem('username', username);
+                window.location.href = '/chat';
+            }
+        });
+    }
+    document.getElementById('submit-btn').addEventListener('click', submit);
+    document.getElementById('username').addEventListener('keypress', e => {
+        if(e.key === 'Enter') submit();
     });
-}
-document.getElementById('username').addEventListener('keypress', e=>{
-    if(e.key==='Enter') submit();
-});
-document.getElementById('password').addEventListener('keypress', e=>{
-    if(e.key==='Enter') submit();
-});
+    document.getElementById('password').addEventListener('keypress', e => {
+        if(e.key === 'Enter') submit();
+    });
 </script>
 </body>
 </html>
