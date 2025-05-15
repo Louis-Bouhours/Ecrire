@@ -26,11 +26,11 @@ func apiUserLogin(c *gin.Context) {
 	var user models.User
 	err := models.UsersCol.FindOne(context.TODO(), bson.M{"username": body.Username}).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur inconnu"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur ou mot de passe invalide"})
 		return
 	}
 	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password)) != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Mauvais mot de passe"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur ou mot de passe invalide"})
 		return
 	}
 

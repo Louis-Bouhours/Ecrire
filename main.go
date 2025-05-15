@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/Sarinja-Corp/Ecrire/api"
+	"github.com/Sarinja-Corp/Ecrire/models"
 	"log"
 	"os"
 
@@ -13,8 +13,6 @@ import (
 )
 
 func main() {
-	fmt.Println("api.client")
-	fmt.Println("api.db")
 	gin.SetMode(gin.ReleaseMode)
 
 	ctx := context.Background()
@@ -24,7 +22,7 @@ func main() {
 		log.Fatalf("Erreur MongoDB: %v", err)
 	}
 	defer func(client *mongo.Client, ctx context.Context) {
-		err := client.Disconnect(ctx)
+		err := models.Client.Disconnect(ctx)
 		if err != nil {
 			log.Fatalf("Erreur déconnexion MongoDB: %v", err)
 		}
@@ -33,6 +31,9 @@ func main() {
 		log.Fatalf("MongoDB indisponible!")
 	}
 	log.Println("MongoDB connecté.")
+
+	models.Client = client
+	models.UsersCol = client.Database("EcrireDB").Collection("users")
 
 	r := gin.Default()
 	r.Static("/static", "./static")
