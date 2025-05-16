@@ -38,4 +38,24 @@ func apiUserLogin(c *gin.Context) {
 		"username": user.Username,
 		"avatar":   user.Avatar,
 	})
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "access_token",
+		Value:    accessToken, // ton JWT d'accès
+		HttpOnly: true,
+		Secure:   true, // si HTTPS
+		Path:     "/",
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   3600, // 1h
+	})
+
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "refresh_token",
+		Value:    refreshToken,
+		HttpOnly: true,
+		Secure:   true,
+		Path:     "/",
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   86400, // 1 jour
+	})
+
 }

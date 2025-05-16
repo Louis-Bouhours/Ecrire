@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Sarinja-Corp/Ecrire/api"
 	"github.com/Sarinja-Corp/Ecrire/auth"
+	"github.com/Sarinja-Corp/Ecrire/chat"
 	"github.com/Sarinja-Corp/Ecrire/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,6 +17,11 @@ import (
 func main() {
 	auth.InitRedis()
 	gin.SetMode(gin.ReleaseMode)
+	router := gin.Default()
+	chat.SetupSocketIO(router)
+	router.Static("/static", "./static")
+	router.LoadHTMLGlob("templates/*")
+	router.Run(":8080")
 
 	r := gin.Default()
 
