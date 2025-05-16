@@ -19,9 +19,6 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	chat.SetupSocketIO(router)
-	router.Static("/static", "./static")
-	router.LoadHTMLGlob("templates/*")
-	router.Run(":8080")
 
 	r := gin.Default()
 
