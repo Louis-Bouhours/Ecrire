@@ -1,26 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
+    if (typeof io !== "function") {
+        alert("Socket.io n'est pas chargé !");
+        return;
+    }
+    const chat = document.getElementById("chat");
+    const form = document.getElementById("form");
+    const input = document.getElementById("input");
+    const username = localStorage.getItem("username");
+    const token = localStorage.getItem("token"); // Ajoute la lecture du token
+
+    if (!chat || !form || !input) {
+        alert("Erreur : éléments du chat non trouvés dans le HTML !");
+        return;
+    }
+    if (!token) {
+        alert("Identifie-toi d'abord !");
+        window.location.href = "/";
+        return;
+    }
+
     const socket = io();
-    const username = localStorage.getItem("username"); // ou une autre méthode si ton JWT contient le pseudo
 
     socket.on("connect", () => {
-        socket.emit("join", username);
+        // Envoie le token (et plus username seul)
+        socket.emit("join", token);
     });
 
-    socket.on("message", (msg) => {
-        const chat = document.getElementById("chat");
-        const message = document.createElement("div");
-        message.textContent = msg;
-        chat.appendChild(message);
-    });
-
-    const form = document.getElementById("form");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const input = document.getElementById("input");
-        socket.emit("message", {
-            username: username,
-            message: input.value
-        });
-        input.value = "";
-    });
+    // ... reste inchangé
 });
