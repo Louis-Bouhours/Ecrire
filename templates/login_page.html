@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Connexion / Inscription Chat</title>
-    <style>
-        body {font-family:Arial,cursive; height:100vh;display:flex;justify-content:center;align-items:center;background:#f0f2f5;}
-        .container {background:#fff;padding:30px 40px;border-radius:10px;box-shadow:0 2px 10px #0002;}
-        .container h2 {margin-bottom: 15px;}
-        input {display:block;margin:12px 0;padding:10px 8px;width:100%;border-radius:5px;border:1px solid #bbb;}
-        button {width:100%;padding:10px;border:none;border-radius:5px;background:#0084ff;color:#fff;font-size:16px;cursor:pointer;}
-        button:hover {background: #0066cc;}
-        .switch {color:#0084ff;cursor:pointer;text-decoration:underline;margin-top:10px;}
-        .error {color: #b33d3d;}
-    </style>
 </head>
 <body>
+
+<link rel="stylesheet" href="../static/css/styles.css">
+<img src="../static/images/ecrirelogo.png" alt="Logo Écrire" class="logo" style="height: 150px">
+
+<!-- Formulaire de connexion / inscription -->
 <div class="container">
     <h2 id="form-title">Connexion</h2>
     <div id="form-error" class="error"></div>
-    <label for="username"></label><input type="text" id="username" placeholder="Nom d'utilisateur" autocomplete="username">
-    <label for="password"></label><input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password">
+    <label for="username"></label>
+    <input type="text" id="username" placeholder="Nom d'utilisateur" autocomplete="username">
+    <label for="password"></label>
+    <input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password">
     <button id="submit-btn">Se connecter</button>
     <div class="switch" id="switch-form" onclick="switchForm()">Vous n'avez pas de compte ? Inscrivez-vous.</div>
 </div>
+
 <script>
     let isLogin = true;
     function switchForm() {
@@ -44,11 +42,11 @@
         }
         const url = isLogin ? '/api/login' : '/api/register';
         fetch(url, {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({username, password})
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
         }).then(r => r.json()).then(res => {
-            if(res.error) {
+            if (res.error) {
                 document.getElementById('form-error').textContent = res.error;
             } else {
                 localStorage.setItem('username', username);
@@ -56,12 +54,13 @@
             }
         });
     }
+
     document.getElementById('submit-btn').addEventListener('click', submit);
     document.getElementById('username').addEventListener('keypress', e => {
-        if(e.key === 'Enter') submit();
+        if (e.key === 'Enter') submit();
     });
     document.getElementById('password').addEventListener('keypress', e => {
-        if(e.key === 'Enter') submit();
+        if (e.key === 'Enter') submit();
     });
 </script>
 </body>
